@@ -1,0 +1,875 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>ふたりの四脳ノート</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@500;600;700&family=Zen+Kaku+Gothic+New:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#F1ECEF; --surface:#FFFFFF; --surface-2:#F8F4F6;
+    --text:#2B222A; --text-muted:#6E6270;
+    --border: rgba(43,34,42,0.12);
+    --a: #A24E63; --a-soft: rgba(162,78,99,0.10); --a-soft2: rgba(162,78,99,0.20);
+    --b: #2F5D62; --b-soft: rgba(47,93,98,0.10); --b-soft2: rgba(47,93,98,0.20);
+    --ai: #8A6423; --ai-soft: rgba(138,100,35,0.08); --ai-border: rgba(138,100,35,0.28);
+    --grp-ruler:#A13F2A; --grp-ruler-soft: rgba(161,63,42,0.10); --grp-ruler-soft2: rgba(161,63,42,0.20);
+    --grp-player:#9C6B1E; --grp-player-soft: rgba(156,107,30,0.10); --grp-player-soft2: rgba(156,107,30,0.20);
+    --grp-observer:#2F5570; --grp-observer-soft: rgba(47,85,112,0.10); --grp-observer-soft2: rgba(47,85,112,0.20);
+    --grp-seeker:#5A4A87; --grp-seeker-soft: rgba(90,74,135,0.10); --grp-seeker-soft2: rgba(90,74,135,0.20);
+    --radius: 16px;
+    --shadow: 0 1px 2px rgba(43,34,42,0.06), 0 6px 20px rgba(43,34,42,0.05);
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --bg:#1C1518; --surface:#241C21; --surface-2:#2C2228;
+      --text:#F1E8E4; --text-muted:#B9A9AE;
+      --border: rgba(241,232,228,0.10);
+      --a:#E08CA0; --a-soft: rgba(224,140,160,0.14); --a-soft2: rgba(224,140,160,0.26);
+      --b:#7FC2C7; --b-soft: rgba(127,194,199,0.14); --b-soft2: rgba(127,194,199,0.26);
+      --ai:#D9B36B; --ai-soft: rgba(217,179,107,0.10); --ai-border: rgba(217,179,107,0.30);
+      --grp-ruler:#E5836A; --grp-ruler-soft: rgba(229,131,105,0.16); --grp-ruler-soft2: rgba(229,131,105,0.28);
+      --grp-player:#E3B96B; --grp-player-soft: rgba(227,185,107,0.16); --grp-player-soft2: rgba(227,185,107,0.28);
+      --grp-observer:#7FB4D9; --grp-observer-soft: rgba(127,180,217,0.16); --grp-observer-soft2: rgba(127,180,217,0.28);
+      --grp-seeker:#B7A6E0; --grp-seeker-soft: rgba(183,166,224,0.16); --grp-seeker-soft2: rgba(183,166,224,0.28);
+      --shadow: 0 1px 2px rgba(0,0,0,0.3), 0 8px 24px rgba(0,0,0,0.35);
+    }
+  }
+  :root[data-theme="dark"]{
+    --bg:#1C1518; --surface:#241C21; --surface-2:#2C2228;
+    --text:#F1E8E4; --text-muted:#B9A9AE;
+    --border: rgba(241,232,228,0.10);
+    --a:#E08CA0; --a-soft: rgba(224,140,160,0.14); --a-soft2: rgba(224,140,160,0.26);
+    --b:#7FC2C7; --b-soft: rgba(127,194,199,0.14); --b-soft2: rgba(127,194,199,0.26);
+    --ai:#D9B36B; --ai-soft: rgba(217,179,107,0.10); --ai-border: rgba(217,179,107,0.30);
+    --grp-ruler:#E5836A; --grp-ruler-soft: rgba(229,131,105,0.16); --grp-ruler-soft2: rgba(229,131,105,0.28);
+    --grp-player:#E3B96B; --grp-player-soft: rgba(227,185,107,0.16); --grp-player-soft2: rgba(227,185,107,0.28);
+    --grp-observer:#7FB4D9; --grp-observer-soft: rgba(127,180,217,0.16); --grp-observer-soft2: rgba(127,180,217,0.28);
+    --grp-seeker:#B7A6E0; --grp-seeker-soft: rgba(183,166,224,0.16); --grp-seeker-soft2: rgba(183,166,224,0.28);
+    --shadow: 0 1px 2px rgba(0,0,0,0.3), 0 8px 24px rgba(0,0,0,0.35);
+  }
+  *{ box-sizing:border-box; }
+  html,body{ height:100%; }
+  body{
+    margin:0; background:var(--bg); color:var(--text);
+    font-family:"Zen Kaku Gothic New","Hiragino Kaku Gothic ProN","Hiragino Sans",sans-serif;
+    -webkit-font-smoothing:antialiased;
+  }
+  h1,h2,h3,.serif{ font-family:"Shippori Mincho","Hiragino Mincho ProN",serif; }
+  #app{ min-height:100dvh; display:flex; flex-direction:column; max-width:640px; margin:0 auto; }
+  a{ color:inherit; }
+  button{ font-family:inherit; }
+
+  /* ---- header ---- */
+  .topbar{
+    position:sticky; top:0; z-index:5; background:var(--bg);
+    padding:18px 18px 12px; border-bottom:1px solid var(--border);
+  }
+  .topbar h1{ margin:0 0 2px; font-size:21px; font-weight:700; letter-spacing:.01em; font-family:"Shippori Mincho",serif; }
+  .topbar .sub{ margin:0; font-size:13px; color:var(--text-muted); }
+  .topbar-row{ display:flex; align-items:flex-end; justify-content:space-between; gap:12px; }
+  .edit-link{
+    background:none; border:none; color:var(--text-muted); font-size:12.5px;
+    text-decoration:underline; text-underline-offset:2px; cursor:pointer; padding:4px;
+    white-space:nowrap;
+  }
+  .compat-chip{
+    margin-top:10px; display:flex; gap:8px; align-items:center; font-size:12.5px;
+    color:var(--text-muted); flex-wrap:wrap;
+  }
+  .dot{ width:8px; height:8px; border-radius:50%; display:inline-block; background:var(--dot-color, var(--text-muted)); }
+
+  /* ---- top site nav ---- */
+  .site-nav{
+    display:flex; align-items:center; justify-content:space-between; gap:10px;
+    padding:14px 18px; border-bottom:1px solid var(--border); background:var(--bg); flex:none;
+  }
+  .site-nav .brand{ font-family:"Shippori Mincho",serif; font-size:15px; font-weight:700; }
+  .site-nav .right{ display:flex; align-items:center; gap:8px; }
+  .site-nav .tabs{ display:flex; gap:4px; background:var(--surface-2); padding:3px; border-radius:20px; }
+  .site-nav .tab-btn{
+    padding:7px 14px; border-radius:16px; border:none; background:none;
+    color:var(--text-muted); font-size:13px; font-weight:600; cursor:pointer;
+  }
+  .site-nav .tab-btn.active{ background:var(--surface); color:var(--text); box-shadow:var(--shadow); }
+  .gear-btn{
+    width:32px; height:32px; border-radius:50%; border:1px solid var(--border); background:var(--surface-2);
+    color:var(--text-muted); font-size:14px; cursor:pointer; display:flex; align-items:center; justify-content:center; flex:none;
+  }
+
+  /* ---- settings modal ---- */
+  .modal-backdrop{
+    position:fixed; inset:0; background:rgba(20,14,17,0.55); z-index:50;
+    display:flex; align-items:flex-end; justify-content:center;
+  }
+  @media (min-width:640px){ .modal-backdrop{ align-items:center; } }
+  .modal-card{
+    background:var(--surface); border-radius:20px 20px 0 0; padding:22px 20px calc(24px + env(safe-area-inset-bottom));
+    width:100%; max-width:480px; box-shadow:var(--shadow); max-height:86vh; overflow-y:auto;
+  }
+  @media (min-width:640px){ .modal-card{ border-radius:20px; } }
+  .modal-card h2{ font-size:18px; margin:0 0 6px; }
+  .modal-card .modal-lead{ font-size:13px; color:var(--text-muted); line-height:1.7; margin:0 0 16px; }
+  .modal-card input[type="password"], .modal-card input[type="text"]{
+    width:100%; padding:11px 12px; border-radius:10px; border:1px solid var(--border);
+    background:var(--surface-2); color:var(--text); font-size:14.5px; font-family:inherit; margin-bottom:10px;
+  }
+  .modal-actions{ display:flex; gap:8px; margin-top:6px; }
+  .modal-actions button{ flex:1; padding:11px; border-radius:10px; font-size:13.5px; cursor:pointer; }
+  .modal-save{ background:var(--text); color:var(--bg); border:none; font-weight:600; }
+  .modal-cancel{ background:none; border:1px solid var(--border); color:var(--text); }
+  .modal-clear{ background:none; border:1px solid var(--border); color:var(--a); }
+  .modal-note{ font-size:11.5px; color:var(--text-muted); line-height:1.7; margin-top:14px; }
+  .modal-note a{ text-decoration:underline; }
+  .key-status{ font-size:12px; margin-bottom:12px; padding:8px 10px; border-radius:8px; background:var(--surface-2); color:var(--text-muted); }
+  .key-status.ok{ color:var(--observer, var(--text)); }
+
+  /* ---- setup / landing screen ---- */
+  .setup{ flex:1; overflow-y:auto; }
+  .types-link{
+    margin-top:22px; background:none; border:none; color:var(--text); font-size:13.5px;
+    font-weight:600; cursor:pointer; text-decoration:underline; text-underline-offset:3px;
+  }
+  .hero{ padding:44px 22px 30px; text-align:center; }
+  .hero .kicker{ font-size:12.5px; color:var(--text-muted); letter-spacing:.04em; margin:0 0 10px; }
+  .hero h1{ font-size:34px; margin:0 0 10px; font-weight:700; letter-spacing:.02em; white-space:pre-line; }
+  .hero .hero-sub{ font-size:15px; color:var(--text-muted); margin:0 0 30px; line-height:1.8; }
+  .brain-row{ display:flex; justify-content:center; gap:22px; flex-wrap:wrap; }
+  .brain-badge{ display:flex; flex-direction:column; align-items:center; gap:8px; width:70px; }
+  .brain-circle{
+    width:56px; height:56px; border-radius:50%; display:flex; align-items:center; justify-content:center;
+    color:#fff; font-family:"Shippori Mincho",serif; font-size:20px; font-weight:600;
+    box-shadow: var(--shadow);
+  }
+  .brain-badge .brain-label{ font-size:11.5px; color:var(--text-muted); line-height:1.4; }
+
+  .category-grid{ padding:0 18px 40px; display:grid; grid-template-columns:1fr 1fr; gap:12px; max-width:560px; margin:0 auto; }
+  @media (max-width:420px){ .category-grid{ grid-template-columns:1fr; } }
+  .cat-card{
+    background:var(--surface); border:1px solid var(--border); border-radius:var(--radius);
+    padding:16px 16px 15px; border-top:3px solid var(--cat-color); box-shadow:var(--shadow);
+  }
+  .cat-card .cat-name{ font-size:15.5px; font-weight:700; color:var(--cat-color); margin:0 0 3px; }
+  .cat-card .cat-tag{ font-size:11.5px; color:var(--text-muted); margin:0 0 8px; }
+  .cat-card .cat-desc{ font-size:13px; color:var(--text-muted); line-height:1.7; margin:0; }
+
+  .types-page{ flex:1; overflow-y:auto; padding:26px 18px 50px; max-width:560px; margin:0 auto; width:100%; }
+  .types-page-title{ font-size:24px; margin:0 0 6px; text-align:center; }
+  .types-page-lead{ font-size:13.5px; color:var(--text-muted); text-align:center; margin:0 0 28px; }
+  .type-group{ margin-bottom:22px; }
+  .type-group .cat-card{ border-top-width:3px; }
+  .type-list{
+    margin-top:10px; border:1px solid var(--border); border-radius:12px; overflow:hidden;
+    background:var(--surface);
+  }
+  .type-row{ border-bottom:1px solid var(--border); }
+  .type-row:last-child{ border-bottom:none; }
+  .type-row-btn{
+    width:100%; text-align:left; padding:13px 15px; background:none; border:none;
+    display:flex; justify-content:space-between; align-items:center; gap:10px;
+    color:var(--text); font-size:14px; font-weight:600; cursor:pointer; font-family:inherit;
+  }
+  .type-row-btn .chevron{ color:var(--text-muted); font-size:16px; transition:transform .15s ease; flex:none; }
+  .type-row.open .chevron{ transform:rotate(90deg); }
+  .type-row-desc{ padding:0 15px 15px; font-size:13px; color:var(--text-muted); line-height:1.75; }
+
+  .start-section{
+    background:var(--surface-2); border-top:1px solid var(--border);
+    padding:34px 20px 44px;
+  }
+  .start-section h2{ font-size:19px; text-align:center; margin:0 0 22px; }
+  .person-block{
+    background:var(--surface); border:1px solid var(--border); border-radius:var(--radius);
+    padding:18px; margin-bottom:16px; box-shadow:var(--shadow);
+    max-width:440px; margin-left:auto; margin-right:auto;
+    border-top:3px solid var(--who-color, var(--border));
+  }
+  .person-block + .person-block{ margin-top:0; }
+  .field{ margin-bottom:14px; }
+  .field:last-child{ margin-bottom:0; }
+  .field label{ display:block; font-size:12.5px; color:var(--text-muted); margin-bottom:6px; }
+  .field input, .field select{
+    width:100%; padding:11px 12px; border-radius:10px; border:1px solid var(--border);
+    background:var(--surface-2); color:var(--text); font-size:15px; font-family:inherit;
+    appearance:none; -webkit-appearance:none;
+  }
+  .field select{
+    background-image:linear-gradient(45deg, transparent 50%, var(--text-muted) 50%),
+                      linear-gradient(135deg, var(--text-muted) 50%, transparent 50%);
+    background-position: calc(100% - 18px) calc(1em + 2px), calc(100% - 13px) calc(1em + 2px);
+    background-size: 5px 5px, 5px 5px; background-repeat:no-repeat;
+  }
+  .type-desc{ margin-top:8px; font-size:12.5px; color:var(--text-muted); line-height:1.6; min-height:1.2em; }
+  .primary-btn{
+    width:100%; max-width:440px; display:block; margin:22px auto 0; padding:14px; border:none; border-radius:12px;
+    background:var(--text); color:var(--bg); font-size:15.5px; font-weight:600; cursor:pointer;
+  }
+  .primary-btn:disabled{ opacity:.45; cursor:not-allowed; }
+  .setup-note{ max-width:440px; margin:14px auto 0; font-size:12px; color:var(--text-muted); line-height:1.7; text-align:center; }
+
+  /* ---- chat feed ---- */
+  .feed{ flex:1; overflow-y:auto; padding:18px 16px 8px; }
+  .empty-state{ text-align:center; color:var(--text-muted); font-size:13.5px; padding:40px 20px; line-height:1.8; }
+  .turn{ margin-bottom:22px; }
+  .q-card{
+    border-radius:14px; padding:13px 15px; font-size:15px; line-height:1.7;
+    border-left:3px solid var(--who-color); background:var(--who-soft);
+  }
+  .q-meta{ font-size:12px; color:var(--text-muted); margin-bottom:4px; display:flex; gap:6px; align-items:center; }
+  .q-meta .name{ font-weight:700; color:var(--who-color); }
+  .a-card{
+    margin-top:8px; margin-left:14px; padding:13px 15px 14px; border-radius:14px;
+    background:var(--surface); border:1px solid var(--ai-border); position:relative;
+  }
+  .a-label{ font-size:11px; color:var(--ai); font-weight:700; margin-bottom:6px; letter-spacing:.02em; }
+  .a-text{ font-size:14.5px; line-height:1.8; white-space:pre-wrap; }
+  .a-pending{ color:var(--text-muted); font-size:13.5px; display:flex; align-items:center; gap:8px; }
+  .spinner{
+    width:13px; height:13px; border-radius:50%; border:2px solid var(--ai-border);
+    border-top-color:var(--ai); animation:spin .8s linear infinite; flex:none;
+  }
+  @keyframes spin{ to{ transform:rotate(360deg); } }
+  .a-error{ color:var(--a); font-size:13.5px; }
+  .retry-btn{
+    margin-top:8px; background:none; border:1px solid var(--border); color:var(--text);
+    border-radius:8px; padding:6px 12px; font-size:12.5px; cursor:pointer;
+  }
+
+  /* ---- composer ---- */
+  .composer{
+    position:sticky; bottom:0; background:var(--bg); border-top:1px solid var(--border);
+    padding:12px 16px calc(12px + env(safe-area-inset-bottom));
+  }
+  .speaker-toggle{ display:flex; gap:8px; margin-bottom:9px; }
+  .speaker-btn{
+    flex:1; padding:8px 10px; border-radius:10px; border:1px solid var(--border);
+    background:var(--surface); color:var(--text-muted); font-size:13px; font-weight:600;
+    cursor:pointer; display:flex; align-items:center; justify-content:center; gap:6px;
+  }
+  .speaker-btn.active{ background:var(--who-soft2); color:var(--who-color); border-color:var(--who-soft2); }
+  .input-row{ display:flex; gap:8px; align-items:flex-end; }
+  .input-row textarea{
+    flex:1; resize:none; border-radius:14px; border:1px solid var(--border);
+    background:var(--surface); color:var(--text); padding:11px 14px; font-size:15px;
+    font-family:inherit; line-height:1.5; max-height:120px; min-height:44px;
+  }
+  .send-btn{
+    width:44px; height:44px; border-radius:50%; border:none; background:var(--text);
+    color:var(--bg); font-size:18px; cursor:pointer; flex:none; display:flex; align-items:center; justify-content:center;
+  }
+  .send-btn:disabled{ opacity:.35; cursor:not-allowed; }
+  .hint{ font-size:11.5px; color:var(--text-muted); margin-top:8px; line-height:1.6; }
+  .banner{
+    margin:0 16px 12px; padding:11px 13px; border-radius:10px; font-size:13px; line-height:1.6;
+    background:var(--surface-2); border:1px solid var(--border); color:var(--text-muted);
+  }
+  .banner a{ text-decoration:underline; font-weight:600; color:var(--text); }
+  .draft-preview{
+    background:var(--surface-2); border:1px dashed var(--border); border-radius:14px;
+    padding:12px 14px; margin-bottom:10px;
+  }
+  .draft-preview .draft-meta{ font-size:12px; color:var(--text-muted); margin-bottom:6px; }
+  .draft-preview .draft-text{ font-size:14.5px; line-height:1.7; white-space:pre-wrap; margin-bottom:10px; }
+  .draft-actions{ display:flex; gap:8px; }
+  .draft-actions button{ flex:1; padding:9px 10px; border-radius:10px; font-size:13px; cursor:pointer; }
+  .draft-edit-btn{ background:none; border:1px solid var(--border); color:var(--text); }
+  .draft-confirm-btn{ background:var(--text); border:none; color:var(--bg); font-weight:600; }
+</style>
+</head>
+<body>
+<div id="app"></div>
+<script>
+(function(){
+  "use strict";
+
+  /* ---------------- knowledge base ---------------- */
+  var TYPES = [
+    {id:'ruler_in', group:'支配者', label:'支配者内向', compat:'支配者内向', desc:'生存・勝敗・損得を起点に、自分の力で勝敗を決めたい「孤高の勝負師」。'},
+    {id:'ruler_ex', group:'支配者', label:'支配者外向', compat:'支配者外向', desc:'人と権力構造を使って勝つ「政治家型」。本性(勝ちたい・上に立ちたい・人や組織を動かしたい・影響力を拡大したい・最終決定権を持ちたい・自分の力を証明したい)をそのまま出すと孤立しやすく、遊戯者内向や観察者外向のふりをする「擬態」をしやすいタイプ。'},
+    {id:'player_in_a', group:'遊戯者', label:'遊戯者内向・甘えん坊型', compat:'遊戯者内向', desc:'自分を正確に把握しながら、無理はしない「愛され待ちタイプ」。'},
+    {id:'player_in_s', group:'遊戯者', label:'遊戯者内向・責任型', compat:'遊戯者内向', desc:'人との約束を原動力にする「誠実な伴走者」。'},
+    {id:'player_ex_a', group:'遊戯者', label:'遊戯者外向・甘えん坊型', compat:'遊戯者外向', desc:'注目されることで能力が開放される「スター型」。'},
+    {id:'player_ex_s', group:'遊戯者', label:'遊戯者外向・責任型', compat:'遊戯者外向', desc:'チヤホヤされる世界を守るために責任を果たす「スター型」。'},
+    {id:'observer_in', group:'観察者', label:'観察者内向', compat:'観察者内向', desc:'世界の構造を理解すること自体が楽しい「研究者」。'},
+    {id:'observer_ex', group:'観察者', label:'観察者外向', compat:'観察者外向', desc:'人間も含めて世界を客観的に観測する「戦略家」。'},
+    {id:'romantic_yang', group:'求道者', label:'ロマンチスト(陽)', compat:'ロマンチスト陽', desc:'自分が信じる理想を現実世界に実装していく「理想主義者」。'},
+    {id:'romantic_yin', group:'求道者', label:'ロマンチスト(陰)', compat:'ロマンチスト陰', desc:'理想と現実の乖離に苦しむ「理想主義者」。'},
+    {id:'vision', group:'求道者', label:'ビジョン型(ロマンチスト特別派生)', compat:'ロマンチスト陽', desc:'理想を論理によって未来の構造へ変換できる人。'},
+    {id:'shinpo_yang', group:'求道者', label:'修行僧・進歩(陽)', compat:'進歩型陽', desc:'成長している実感が最大の報酬になる「努力型」。'},
+    {id:'shinpo_yin', group:'求道者', label:'修行僧・進歩(陰)', compat:'進歩型陰', desc:'努力はしているが、その努力設計自体が破滅的な人。'},
+    {id:'chowa_yang', group:'求道者', label:'修行僧・調和(陽)', compat:'調和型陽', desc:'自分を律しながら周囲との秩序を守る「調和型」。'},
+    {id:'chowa_yin', group:'求道者', label:'修行僧・調和(陰)', compat:'調和型陰', desc:'努力はするが、進む方向への迷いが繰り返し生じるタイプ。'},
+    {id:'engi_yang', group:'求道者', label:'白紙・演技(陽)', compat:'白紙演技陽', desc:'理想の人物を演じることで、その人物へ近づいていくタイプ。'},
+    {id:'engi_yin', group:'求道者', label:'白紙・演技(陰)', compat:'白紙演技陰', desc:'理想の自分と現実の自分の差に苦しむ役者。'},
+    {id:'hyoi_yang', group:'求道者', label:'白紙・憑依(陽)', compat:'白紙憑依陽', desc:'正しい人物に出会うと急激に成長する「最高の弟子型」。'},
+    {id:'hyoi_yin', group:'求道者', label:'白紙・憑依(陰)', compat:'白紙憑依陰', desc:'他人の価値観に飲み込まれて自分を失った状態。'}
+  ];
+  var COMPAT = {
+    '支配者内向': ['遊戯者外向','観察者外向'],
+    '支配者外向': ['ロマンチスト陰'],
+    '観察者内向': ['白紙憑依陰','白紙憑依陽','白紙演技陽','白紙演技陰','調和型陽','調和型陰','進歩型陰'],
+    '観察者外向': ['遊戯者内向','支配者内向'],
+    '遊戯者内向': ['観察者外向','ロマンチスト陽'],
+    '遊戯者外向': ['支配者内向','ロマンチスト陰','進歩型陰'],
+    'ロマンチスト陽': ['遊戯者内向','白紙憑依陰','白紙演技陰'],
+    'ロマンチスト陰': ['支配者外向','遊戯者外向'],
+    '調和型陽': ['観察者内向'],
+    '調和型陰': ['観察者内向'],
+    '進歩型陽': ['白紙演技陽'],
+    '進歩型陰': ['観察者内向','遊戯者外向'],
+    '白紙憑依陽': ['観察者内向'],
+    '白紙憑依陰': ['観察者内向'],
+    '白紙演技陽': ['進歩型陽','観察者内向'],
+    '白紙演技陰': ['ロマンチスト陽','観察者内向']
+  };
+  var FRAMEWORK_OVERVIEW = "四脳分類は、人の行動や価値観の奥にある「欲望の優先順位」を、4つの脳(爬虫類脳=支配者/哺乳類脳=遊戯者/人間脳・論理=観察者/人間脳・抽象=求道者)から読み解くフレームワーク。誰の中にも4つの欲望があるが、優先順位や内向・外向、陽・陰などの表れ方によって19タイプに分かれる。同じような行動をしていても、その裏にある動機は人によって異なる、という前提に立つ。";
+  var RULER_MIMICRY = "【支配者外向の「擬態」についての詳細知識(該当者がいる場合の参考資料)】\n支配者外向は「勝ちたい・上に立ちたい・人や組織を動かしたい・自分の影響力を拡大したい・最終的な決定権を持ちたい・自分の力を証明したい」という欲望を持つが、そのまま出すと「自己中心的・支配的・怖い・人を利用している・承認欲求が強い」と評価され、人が離れ協力者が集まらなくなる。そのため周囲に受け入れられやすい人格表現、すなわち「擬態」を身につけることが多い。これは単なる嘘や演技というより、支配者としての目的を達成するための社会的な生存戦略であり、支配欲そのものが消えたわけではなく「隠した方が勝てる」と学習した結果であることが多い。\n擬態が強化されやすい環境: 経営者・管理職・政治家などの立場、SNSなど継続的に評価される環境、協調性や謙虚さが求められる組織、支配性を出すと嫌われるコミュニティ、「良い人」であることを求められる仕事、本音を出して人が離れた経験、強い親や権力者の下で従うことを覚えた過去、本性を出すと協力を失う利害関係。\n主な擬態先は2タイプ。(1)遊戯者内向(約8割): 親しみやすい・柔らかい・愛嬌がある・少し抜けているように見える・人に助けてもらう・自分を小さく見せる、という表面の裏で、実際は人員配置や情報を自分に集約し最終決定権は手放さない。弱く見せることと権力を手放すことは別。(2)観察者外向(約2割): 数字で判断する・感情に流されない・客観的に分析する・冷静な意思決定者に見える、という表面の裏で、本来の観察者外向が持つ「正しい結論を求める」姿勢とは異なり「自分が結論を出すこと」自体にこだわる。\n擬態型に出やすい言葉のパターン: 「ギブ」をやたら強調する(見分け方はギブしたか否かでなく、ギブの後に何を要求しているか)。綺麗事をSNSで並べる(見分け方は発信と実際の意思決定が一致しているか)。現実味のない巨大な目標を掲げる(見分け方は目標の大きさでなく、現在地・期限・市場・競争優位・必要な資金や数字など到達方法を具体的に語れるか)。\n擬態型支配者はメタ認知が低く自己洗脳能力が高いことがあり、「自分は正しい」「自分は被害者だ」「これは大義のために必要だった」という都合のよい物語を自分自身が信じ込んでしまうことがある。事実から判断するのではなく、守りたい自己像から事実の解釈を変えてしまう。問題を指摘されると指摘した側を加害者として扱い自分を被害者の立場に置き換える、過去の恩義を「裏切り」ではなく「救済」と言い換える、不祥事の責任を他人に転嫁してスケープゴートを作る、といった行動が見られることがある。\n擬態は平常時には見えにくく、追い込まれた時(責任を追及された・権力を失いそうな・自分より目立つ人が現れた・過去の発言との矛盾を突かれた等)に破綻しやすく、攻撃・責任転嫁・被害者化・スケープゴート・過去の恩の強調・SNSでの正当性アピールといった反応が出やすい。\n見抜くための視点: 言葉ではなく、利害が衝突した時にどちらを選ぶかを見る。お金と理念が衝突した時どちらを取るか、自分より優秀な人を上に置けるか、最終決定権を他人に渡せるか、自分が評価されなくても続けられるか、自分の失敗を具体的に認められるか等。「何を語っているか」ではなく「何を手放せないか」を見る。\n※これは「支配者外向=悪い人」という意味ではなく、支配欲を隠して社会的に生きるための無意識の戦略であることが多い。関係の中でこの傾向に気づいたら、責め合うのではなく本音を安全に出せる関係性をどう作れるかという視点で扱うのが望ましい。";
+
+  function typeById(id){ for (var i=0;i<TYPES.length;i++){ if (TYPES[i].id===id) return TYPES[i]; } return null; }
+  function isCompatMutual(compatA, compatB){
+    var la = COMPAT[compatA]||[]; var lb = COMPAT[compatB]||[];
+    return la.indexOf(compatB)>-1 || lb.indexOf(compatA)>-1;
+  }
+
+  var GROUPS = [
+    {name:'支配者', brain:'爬虫類脳', glyph:'支', varKey:'ruler', tag:'生存・勝敗・損得', desc:'競争に勝つこと、成果を出すこと、自ら状況を動かすことを重視する傾向。'},
+    {name:'遊戯者', brain:'哺乳類脳', glyph:'遊', varKey:'player', tag:'仲間意識・愛情・楽しさ', desc:'人とのつながりや愛情、仲間と一緒に過ごす楽しさを重視する傾向。'},
+    {name:'観察者', brain:'人間脳・論理', glyph:'観', varKey:'observer', tag:'理性・情報処理', desc:'情報を集め、物事の仕組みや構造を論理的に理解することを重視する傾向。'},
+    {name:'求道者', brain:'人間脳・抽象', glyph:'求', varKey:'seeker', tag:'理想・抽象概念', desc:'自分が信じる意味や価値、まだ形になっていない理想を追求する傾向。'}
+  ];
+  function groupOf(name){ for (var i=0;i<GROUPS.length;i++){ if (GROUPS[i].name===name) return GROUPS[i]; } return GROUPS[3]; }
+  function colorVarsFor(varKey){
+    return { color:'var(--grp-'+varKey+')', soft:'var(--grp-'+varKey+'-soft)', soft2:'var(--grp-'+varKey+'-soft2)' };
+  }
+  var FALLBACK_COLOR = { color:'var(--ai)', soft:'var(--ai-soft)', soft2:'var(--grp-player-soft2)' };
+  function personColors(p){
+    var typeA = typeById(p.typeA), typeB = typeById(p.typeB);
+    var gA = typeA ? groupOf(typeA.group) : GROUPS[0];
+    var gB = typeB ? groupOf(typeB.group) : GROUPS[2];
+    var colorA = colorVarsFor(gA.varKey);
+    var colorB = (typeB && typeA && typeA.group===typeB.group) ? FALLBACK_COLOR : colorVarsFor(gB.varKey);
+    return { A: colorA, B: colorB };
+  }
+
+  function buildKnowledgeBase(){
+    var lines = [];
+    lines.push(FRAMEWORK_OVERVIEW);
+    lines.push("");
+    lines.push("【19タイプ一覧】");
+    for (var i=0;i<TYPES.length;i++){ lines.push("・"+TYPES[i].label+": "+TYPES[i].desc); }
+    lines.push("");
+    lines.push("【相思相愛の相性データ(関係の優劣を決めるものではなく、傾向を理解する参考情報)】");
+    for (var k in COMPAT){ if (COMPAT.hasOwnProperty(k)){ lines.push(k+" ⇔ "+COMPAT[k].join("、")); } }
+    lines.push("");
+    lines.push(RULER_MIMICRY);
+    return lines.join("\n");
+  }
+  var KNOWLEDGE_BASE = buildKnowledgeBase();
+
+  /* ---------------- storage (always local to this browser) ---------------- */
+  var Store = {
+    init: function(onProfile, onMessages){
+      try{
+        var raw = localStorage.getItem('fb_profile');
+        onProfile(raw ? JSON.parse(raw) : null);
+      }catch(e){ onProfile(null); }
+      this._loadLocalMessages(onMessages);
+    },
+    _loadLocalMessages: function(onMessages){
+      try{
+        var raw = localStorage.getItem('fb_messages');
+        var arr = raw ? JSON.parse(raw) : [];
+        onMessages(arr);
+      }catch(e){ onMessages([]); }
+    },
+    _saveLocalMessages: function(arr){
+      try{ localStorage.setItem('fb_messages', JSON.stringify(arr)); }catch(e){}
+    },
+    saveProfile: function(profile, cb){
+      try{ localStorage.setItem('fb_profile', JSON.stringify(profile)); cb&&cb(true); }catch(e){ cb&&cb(false); }
+    },
+    addMessage: function(msg, cb){
+      var id = 'm'+Date.now()+'_'+Math.random().toString(36).slice(2,8);
+      var arr = state.messages.slice();
+      var copy = {}; for (var k in msg){ copy[k]=msg[k]; } copy.id=id;
+      arr.push(copy);
+      this._saveLocalMessages(arr);
+      state.messages = arr;
+      cb&&cb(id);
+      render();
+    },
+    updateMessage: function(id, patch){
+      var arr = state.messages.slice();
+      for (var i=0;i<arr.length;i++){
+        if (arr[i].id===id){ for (var k in patch){ arr[i][k]=patch[k]; } break; }
+      }
+      this._saveLocalMessages(arr);
+      state.messages = arr;
+      render();
+    }
+  };
+
+  /* ---------------- app state ---------------- */
+  var state = {
+    view: 'loading',
+    profile: null,
+    messages: [],
+    speaker: (function(){ try{ return localStorage.getItem('fb_last_speaker')||'A'; }catch(e){ return 'A'; } })(),
+    sending: false,
+    pendingDraft: null,
+    route: 'chat',
+    openTypeIds: {}
+  };
+
+  var root = document.getElementById('app');
+
+  Store.init(function(profile){
+    state.profile = profile;
+    state.view = profile ? 'chat' : 'setup';
+    render();
+  }, function(messages){
+    messages.sort(function(a,b){ return (a.createdAt||0)-(b.createdAt||0); });
+    state.messages = messages;
+    render();
+  });
+
+  /* ---------------- rendering ---------------- */
+
+  function el(tag, attrs, children){
+    var e = document.createElement(tag);
+    if (attrs){ for (var k in attrs){
+      if (k==='class') e.className = attrs[k];
+      else if (k==='html') e.innerHTML = attrs[k];
+      else if (k.indexOf('on')===0 && typeof attrs[k]==='function') e.addEventListener(k.slice(2), attrs[k]);
+      else e.setAttribute(k, attrs[k]);
+    }}
+    if (children){ children.forEach(function(c){ if (c) e.appendChild(c); }); }
+    return e;
+  }
+  function text(t){ return document.createTextNode(t); }
+
+  function render(){
+    var feedBefore = root.querySelector('.feed');
+    var scrollInfo = null;
+    if (feedBefore){
+      var distFromBottom = feedBefore.scrollHeight - feedBefore.scrollTop - feedBefore.clientHeight;
+      scrollInfo = { atBottom: distFromBottom < 48, top: feedBefore.scrollTop };
+    }
+    root.innerHTML = '';
+    if (state.view==='loading'){
+      root.appendChild(el('div',{style:'padding:60px 24px;color:var(--text-muted);font-size:14px;text-align:center;'},[text('読み込み中…')]));
+      return;
+    }
+
+    var shell = el('div',{style:'display:flex;flex-direction:column;flex:1;min-height:0;'});
+    shell.appendChild(buildTopNav());
+
+    var content;
+    if (state.route==='types'){
+      content = buildTypesPage();
+    } else if (state.view==='setup'){
+      content = buildSetupContent();
+    } else {
+      content = buildChatContent();
+    }
+    shell.appendChild(content);
+    root.appendChild(shell);
+
+    var feed = shell.querySelector('.feed');
+    if (feed){
+      if (!scrollInfo || scrollInfo.atBottom){ feed.scrollTop = feed.scrollHeight; }
+      else { feed.scrollTop = scrollInfo.top; }
+    }
+    try{
+      document.title = (state.profile ? state.profile.nameA+'と'+state.profile.nameB+'の四脳分類' : '四脳分類');
+    }catch(e){}
+  }
+
+  function buildTopNav(){
+    var nav = el('div',{class:'site-nav'});
+    var brandLabel = state.profile ? (state.profile.nameA+'と'+state.profile.nameB+'の四脳分類') : '四脳分類';
+    nav.appendChild(el('div',{class:'brand'},[text(brandLabel)]));
+    var right = el('div',{class:'right'});
+    var tabs = el('div',{class:'tabs'});
+    var chatTab = el('button',{class:'tab-btn'+(state.route==='chat'?' active':'')},[text('チャット')]);
+    var typesTab = el('button',{class:'tab-btn'+(state.route==='types'?' active':'')},[text('タイプ一覧')]);
+    chatTab.addEventListener('click', function(){ state.route='chat'; render(); });
+    typesTab.addEventListener('click', function(){ state.route='types'; render(); });
+    tabs.appendChild(chatTab); tabs.appendChild(typesTab);
+    right.appendChild(tabs);
+    nav.appendChild(right);
+    return nav;
+  }
+
+  /* ---- setup / landing content (shown inside the Chat tab until a profile exists) ---- */
+  function buildSetupContent(){
+    var existing = state.profile || {};
+    var wrap = el('div',{class:'setup'});
+
+    var hero = el('div',{class:'hero'});
+    hero.appendChild(el('p',{class:'kicker'},[text('四脳分類')]));
+    hero.appendChild(el('h1',{class:'serif'},[text('欲望の優先順位から、\nふたりを読み解く。')]));
+    hero.appendChild(el('p',{class:'hero-sub'},[text('四脳分類は、行動や価値観の奥にある「なぜ」を、4つの脳から見つめるためのフレームワーク。')]));
+    var brainRow = el('div',{class:'brain-row'});
+    GROUPS.forEach(function(g){
+      var vars = colorVarsFor(g.varKey);
+      var circle = el('div',{class:'brain-circle', style:'background:'+vars.color+';'},[text(g.glyph)]);
+      brainRow.appendChild(el('div',{class:'brain-badge'},[circle, el('div',{class:'brain-label'},[text(g.name)])]));
+    });
+    hero.appendChild(brainRow);
+    var typesLink = el('button',{class:'types-link'},[text('4つのタイプの説明を見る　→')]);
+    typesLink.addEventListener('click', function(){ state.route='types'; render(); });
+    hero.appendChild(typesLink);
+    wrap.appendChild(hero);
+
+    var startSection = el('div',{class:'start-section'});
+    startSection.appendChild(el('h2',{class:'serif'},[text('ふたりのタイプを選んで、はじめる')]));
+    var blockA = buildPersonBlock('a', existing.nameA||'', existing.typeA||'', '自分');
+    var blockB = buildPersonBlock('b', existing.nameB||'', existing.typeB||'', 'パートナー');
+    startSection.appendChild(blockA.block);
+    startSection.appendChild(blockB.block);
+
+    var btn = el('button',{class:'primary-btn'},[text(state.profile? 'プロフィールを更新する' : 'ふたりのチャットをはじめる')]);
+    btn.addEventListener('click', function(){
+      var nameA = blockA.nameInput.value.trim() || '自分';
+      var nameB = blockB.nameInput.value.trim() || 'パートナー';
+      var typeA = blockA.select.value;
+      var typeB = blockB.select.value;
+      if (!typeA || !typeB){
+        btn.textContent = 'ふたりのタイプを選んでください';
+        setTimeout(function(){ btn.textContent = state.profile? 'プロフィールを更新する':'ふたりのチャットをはじめる'; }, 1600);
+        return;
+      }
+      var profile = {nameA:nameA, typeA:typeA, nameB:nameB, typeB:typeB, updatedAt: Date.now()};
+      Store.saveProfile(profile, function(ok){
+        if (ok){ state.profile = profile; state.view='chat'; render(); }
+      });
+    });
+    startSection.appendChild(btn);
+    startSection.appendChild(el('p',{class:'setup-note'},[text('※ このツールはご自身の四脳分類の知識をもとに、行動の裏側にある欲望や動機を考えるための参考ツールです。診断結果を断定したり、関係性の良し悪しを決めつけるものではありません。')]));
+    wrap.appendChild(startSection);
+
+    return wrap;
+  }
+
+  function buildPersonBlock(who, name, typeId, placeholderLabel){
+    var block = el('div',{class:'person-block '+who});
+    block.appendChild(el('div',{class:'field'},[
+      el('label',{},[text((who==='a'?'あなた':'パートナー')+'の名前')]),
+      (function(){ var inp = el('input',{type:'text', placeholder:'例: '+placeholderLabel, value:name}); return inp; })()
+    ]));
+    var nameInput = block.querySelector('input');
+
+    var select = el('select',{});
+    select.appendChild(el('option',{value:''},[text('タイプを選択してください')]));
+    GROUPS.forEach(function(g){
+      var og = document.createElement('optgroup'); og.label = g.name;
+      TYPES.filter(function(t){ return t.group===g.name; }).forEach(function(t){
+        var op = el('option',{value:t.id},[text(t.label)]);
+        if (t.id===typeId) op.setAttribute('selected','selected');
+        og.appendChild(op);
+      });
+      select.appendChild(og);
+    });
+
+    var descBox = el('div',{class:'type-desc'});
+    function refreshDesc(){
+      var t=typeById(select.value);
+      descBox.textContent = t ? t.desc : '';
+      var vars = t ? colorVarsFor(groupOf(t.group).varKey) : null;
+      block.style.setProperty('--who-color', vars ? vars.color : 'var(--border)');
+    }
+    select.addEventListener('change', refreshDesc);
+
+    var fieldSelect = el('div',{class:'field'},[
+      el('label',{},[text((who==='a'?'あなた':'パートナー')+'のタイプ(四脳分類)')]),
+      select
+    ]);
+    block.appendChild(fieldSelect);
+    block.appendChild(descBox);
+    refreshDesc();
+
+    return {block:block, nameInput:nameInput, select:select};
+  }
+
+  /* ---- chat screen ---- */
+  function buildChatContent(){
+    var p = state.profile;
+    var typeA = typeById(p.typeA), typeB = typeById(p.typeB);
+    var mutual = (typeA && typeB) ? isCompatMutual(typeA.compat, typeB.compat) : false;
+    var colors = personColors(p);
+
+    var wrap = el('div',{style:'display:flex;flex-direction:column;flex:1;min-height:0;'});
+
+    var top = el('div',{class:'topbar'});
+    var row = el('div',{class:'topbar-row'},[
+      el('p',{class:'sub'},[text(p.nameA+'（'+(typeA?typeA.label:'?')+'）× '+p.nameB+'（'+(typeB?typeB.label:'?')+'）')]),
+      el('button',{class:'edit-link'},[text('プロフィール編集')])
+    ]);
+    row.querySelector('button').addEventListener('click', function(){ state.view='setup'; render(); });
+    top.appendChild(row);
+    top.appendChild(el('div',{class:'compat-chip'},[
+      el('span',{class:'dot', style:'--dot-color:'+colors.A.color+';'}), text(p.nameA),
+      text('・'),
+      el('span',{class:'dot', style:'--dot-color:'+colors.B.color+';'}), text(p.nameB),
+      text(mutual ? '　このフレームワークの相性データでは「相思相愛」の組み合わせとして紹介されています。' : '　このフレームワークの相性データ上、定番の組み合わせではありませんが、優劣を示すものではありません。')
+    ]));
+    wrap.appendChild(top);
+
+    wrap.appendChild(el('div',{class:'banner'},[text('会話の記録はこの端末・このブラウザにだけ保存されます。ふたりで同じ内容を見るには、同じ端末/ブラウザから開いてご利用ください(別の端末からは同期されません)。')]));
+
+    var feed = el('div',{class:'feed'});
+    if (!state.messages.length){
+      feed.appendChild(el('div',{class:'empty-state'},[text('「なんで自分はこうしちゃうんだろう」「彼女のこの行動ってどういう意味?」——気になったことを下から送ってみてください。ふたりのタイプをもとに読み解きます。')]));
+    } else {
+      state.messages.forEach(function(m){ feed.appendChild(renderTurn(m, p, colors)); });
+    }
+    wrap.appendChild(feed);
+
+    var composer = buildComposer(p, colors);
+    wrap.appendChild(composer);
+
+    return wrap;
+  }
+
+  function renderTurn(m, p, colors){
+    var who = m.speaker==='A' ? colors.A : colors.B;
+    var turn = el('div',{class:'turn'});
+    var qCard = el('div',{class:'q-card', style:'--who-color:'+who.color+';--who-soft:'+who.soft+';'});
+    qCard.appendChild(el('div',{class:'q-meta'},[
+      el('span',{class:'name'},[text(m.speakerName)]),
+      text('・'+(m.typeLabel||''))
+    ]));
+    qCard.appendChild(el('div',{},[text(m.question)]));
+    turn.appendChild(qCard);
+
+    var aCard = el('div',{class:'a-card'});
+    aCard.appendChild(el('div',{class:'a-label'},[text('四脳分類での読み解き')]));
+    if (m.status==='done'){
+      aCard.appendChild(el('div',{class:'a-text'},[text(m.answer||'')]));
+    } else if (m.status==='error'){
+      aCard.appendChild(el('div',{class:'a-error'},[text(m.errorMessage||'うまく読み解けませんでした。')]));
+      var retry = el('button',{class:'retry-btn'},[text('もう一度試す')]);
+      retry.addEventListener('click', function(){ runSample(m, p); });
+      aCard.appendChild(retry);
+    } else {
+      aCard.appendChild(el('div',{class:'a-pending'},[el('span',{class:'spinner'}), text('読み解いています…')]));
+    }
+    turn.appendChild(aCard);
+    return turn;
+  }
+
+  function buildComposer(p, colors){
+    var wrap = el('div',{class:'composer'});
+    var hasDraft = !!state.pendingDraft;
+    var canSend = !hasDraft && !state.sending;
+
+    var toggle = el('div',{class:'speaker-toggle'});
+    var btnA = el('button',{class:'speaker-btn'+(state.speaker==='A'?' active':''), style:'--who-color:'+colors.A.color+';--who-soft2:'+colors.A.soft2+';'},[text(p.nameA+'として')]);
+    var btnB = el('button',{class:'speaker-btn'+(state.speaker==='B'?' active':''), style:'--who-color:'+colors.B.color+';--who-soft2:'+colors.B.soft2+';'},[text(p.nameB+'として')]);
+    if (hasDraft){ btnA.setAttribute('disabled','disabled'); btnB.setAttribute('disabled','disabled'); }
+    btnA.addEventListener('click', function(){ state.speaker='A'; try{localStorage.setItem('fb_last_speaker','A');}catch(e){} render(); });
+    btnB.addEventListener('click', function(){ state.speaker='B'; try{localStorage.setItem('fb_last_speaker','B');}catch(e){} render(); });
+    toggle.appendChild(btnA); toggle.appendChild(btnB);
+    wrap.appendChild(toggle);
+
+    var savedText = '';
+
+    if (hasDraft){
+      var d = state.pendingDraft;
+      var dName = d.speaker==='A' ? p.nameA : p.nameB;
+      var preview = el('div',{class:'draft-preview'});
+      preview.appendChild(el('div',{class:'draft-meta'},[text(dName+'として送る内容(まだAIには送られていません)')]));
+      preview.appendChild(el('div',{class:'draft-text'},[text(d.text)]));
+      var actions = el('div',{class:'draft-actions'});
+      var editBtn = el('button',{class:'draft-edit-btn'},[text('修正する')]);
+      var confirmBtn = el('button',{class:'draft-confirm-btn'},[text('この内容で読み解く')]);
+      editBtn.addEventListener('click', function(){
+        savedText = d.text;
+        state.pendingDraft = null;
+        render();
+        var taEl = document.querySelector('.composer textarea');
+        if (taEl){ taEl.value = savedText; taEl.style.height='auto'; taEl.style.height=Math.min(taEl.scrollHeight,120)+'px'; taEl.focus(); }
+      });
+      confirmBtn.addEventListener('click', function(){
+        var draft = state.pendingDraft;
+        state.pendingDraft = null;
+        submitQuestion(draft.text, draft.speaker, p);
+      });
+      actions.appendChild(editBtn); actions.appendChild(confirmBtn);
+      preview.appendChild(actions);
+      wrap.appendChild(preview);
+    }
+
+    var row = el('div',{class:'input-row'});
+    var ta = el('textarea',{placeholder: '例: さっき既読無視されて不安になった。これってなんでだと思う?', rows:'1'});
+    var send = el('button',{class:'send-btn', 'aria-label':'内容を確認する'},[text('✓')]);
+    if (!canSend){
+      ta.setAttribute('disabled','disabled');
+      send.setAttribute('disabled','disabled');
+    }
+
+    ta.addEventListener('input', function(){ ta.style.height='auto'; ta.style.height=Math.min(ta.scrollHeight,120)+'px'; });
+    send.addEventListener('click', stageDraft);
+
+    function stageDraft(){
+      var v = ta.value.trim();
+      if (!v || !canSend) return;
+      state.pendingDraft = {text:v, speaker: state.speaker};
+      render();
+    }
+
+    row.appendChild(ta); row.appendChild(send);
+    wrap.appendChild(row);
+    wrap.appendChild(el('div',{class:'hint'},[text('Enterキーは改行です。内容を確認してから「この内容で読み解く」を押すまでAIには送信されません。')]));
+    return wrap;
+  }
+
+  /* ---- types list page ---- */
+  function buildTypesPage(){
+    var wrap = el('div',{class:'types-page'});
+    wrap.appendChild(el('h1',{class:'serif types-page-title'},[text('四脳分類 タイプ一覧')]));
+    wrap.appendChild(el('p',{class:'types-page-lead'},[text('気になるタイプをタップすると、簡単な説明が開きます。')]));
+
+    GROUPS.forEach(function(g){
+      var vars = colorVarsFor(g.varKey);
+      var section = el('div',{class:'type-group'});
+      var head = el('div',{class:'cat-card', style:'--cat-color:'+vars.color+';'});
+      head.appendChild(el('p',{class:'cat-name'},[text(g.name)]));
+      head.appendChild(el('p',{class:'cat-tag'},[text(g.brain+'　·　'+g.tag)]));
+      head.appendChild(el('p',{class:'cat-desc'},[text(g.desc)]));
+      section.appendChild(head);
+
+      var list = el('div',{class:'type-list'});
+      TYPES.filter(function(t){ return t.group===g.name; }).forEach(function(t){
+        var isOpen = !!state.openTypeIds[t.id];
+        var row = el('div',{class:'type-row'+(isOpen?' open':'')});
+        var btn = el('button',{class:'type-row-btn'},[
+          el('span',{},[text(t.label)]),
+          el('span',{class:'chevron'},[text('›')])
+        ]);
+        btn.addEventListener('click', function(){
+          state.openTypeIds[t.id] = !state.openTypeIds[t.id];
+          render();
+        });
+        row.appendChild(btn);
+        if (isOpen){
+          row.appendChild(el('div',{class:'type-row-desc'},[text(t.desc)]));
+        }
+        list.appendChild(row);
+      });
+      section.appendChild(list);
+      wrap.appendChild(section);
+    });
+
+    return wrap;
+  }
+
+  /* ---------------- question flow (calls Anthropic API directly) ---------------- */
+  function submitQuestion(question, who, p){
+    var speakerName = who==='A' ? p.nameA : p.nameB;
+    var typeObj = typeById(who==='A' ? p.typeA : p.typeB);
+    var msg = {
+      speaker: who,
+      speakerName: speakerName,
+      typeLabel: typeObj ? typeObj.label : '',
+      question: question,
+      answer: null,
+      status: 'pending',
+      createdAt: Date.now()
+    };
+    state.sending = true;
+    Store.addMessage(msg, function(id){
+      state.sending = false;
+      if (!id){ return; }
+      msg.id = id;
+      runSample(msg, p);
+    });
+    render();
+  }
+
+  function buildSystemPrompt(p){
+    var typeA = typeById(p.typeA), typeB = typeById(p.typeB);
+    var mutual = (typeA && typeB) ? isCompatMutual(typeA.compat, typeB.compat) : false;
+    var lines = [];
+    lines.push(KNOWLEDGE_BASE);
+    lines.push('');
+    lines.push('【今回のふたりのプロフィール】');
+    lines.push(p.nameA+'さん: タイプ='+(typeA?typeA.label:'不明')+'　'+(typeA?typeA.desc:''));
+    lines.push(p.nameB+'さん: タイプ='+(typeB?typeB.label:'不明')+'　'+(typeB?typeB.desc:''));
+    lines.push(mutual ? '相性データ上、ふたりは「相思相愛」の組み合わせとして紹介されています。' : '相性データ上、定番の組み合わせとしては挙げられていませんが、これは優劣を示すものではありません。');
+    lines.push('');
+    lines.push('【あなたの役割】');
+    lines.push('あなたは四脳分類にとても詳しい、自然体で話すアナリストです。ふたりが自己理解・相互理解を深める手助けをしてください。');
+    lines.push('・「その気持ちわかります」のような共感の前置きや、内容を無条件に肯定する相槌は書かない。ただし不自然に冷たくする必要もなく、ふだんの会話のような自然な話し言葉で答える。');
+    lines.push('・上のフレームワークの記述から言えることは仮説として提示してよいが、言い切れないことは断定しない。根拠の強さに応じて「〜だと思われます」「〜の可能性があります」を使い分ける。');
+    lines.push('・上の19タイプ・相性データ・支配者外向の擬態に関する記述の範囲を超えることは推測で埋めない。書かれていない内容を聞かれたら、判断できない旨を伝える。');
+    lines.push('・答えるために必要な情報が不足している場合は、決めつけずに聞き返してよい。');
+    lines.push('・このツールは、登録済みのタイプに沿っているかどうかを確認するためだけのものではない。書かれた内容の中に、登録タイプだけでは説明しきれない要素が見えたら、見過ごさずに指摘する。「登録されているタイプだけでは説明がつかない部分があり、別の要素(他のタイプの影響、擬態、状況要因など)が混ざっている可能性がある」というように、可能性として提示してよい。既存のタイプに無理やり寄せて辻褄を合わせない。');
+    lines.push('・質問がふたりの関係やパートナーそのものについてでない限り、無理にパートナーや相性の話に結びつけない。聞かれたことにだけ答える。');
+    lines.push('・タイプを理由に一方を悪者にしたり、優劣をつけたりしない。');
+    lines.push('・箇条書きやMarkdown記号は使わず、自然な話し言葉で、発言者に語りかけるように書く。長さは内容に応じてよく、無理に揃えなくてよい。');
+    return lines.join('\n');
+  }
+
+  function patchLocalMessage(id, patch){
+    var arr = state.messages.slice();
+    for (var i=0;i<arr.length;i++){
+      if (arr[i].id===id){ for (var k in patch){ arr[i][k]=patch[k]; } break; }
+    }
+    state.messages = arr;
+  }
+
+  function callClaude(systemPrompt, turns){
+    return fetch('/api/chat', {
+      method: 'POST',
+      headers: { 'content-type': 'application/json' },
+      body: JSON.stringify({
+        system: systemPrompt,
+        messages: turns
+      })
+    }).then(function(res){
+      return res.json().then(function(data){
+        if (!res.ok || data.error){
+          var err = new Error((data && data.error) || ('HTTP '+res.status));
+          err.status = res.status;
+          throw err;
+        }
+        return data.text || '';
+      });
+    });
+  }
+
+  function runSample(m, p){
+    patchLocalMessage(m.id, {status:'pending', errorMessage:null});
+    render();
+
+    var history = state.messages.filter(function(x){ return x.status==='done' && x.id!==m.id; }).slice(-6);
+    var turns = [];
+    history.forEach(function(h){
+      turns.push({role:'user', content: h.speakerName+'（'+h.typeLabel+'）: '+h.question});
+      turns.push({role:'assistant', content: h.answer});
+    });
+    turns.push({role:'user', content: m.speakerName+'（'+m.typeLabel+'）: '+m.question});
+
+    callClaude(buildSystemPrompt(p), turns).then(function(textOut){
+      patchLocalMessage(m.id, {status:'done', answer: textOut});
+      render();
+      Store.updateMessage(m.id, {status:'done', answer: textOut});
+    }).catch(function(e){
+      var friendly = '少し時間をおいてもう一度試してみてください。';
+      if (e && e.status===429) friendly = '利用が混み合っています(レート制限)。しばらくしてからもう一度お試しください。';
+      else if (e && e.status===500) friendly = 'サーバー側の設定に問題がある可能性があります。Netlifyの環境変数(ANTHROPIC_API_KEY)を確認してください。';
+      else if (e && e.status>=500) friendly = 'Anthropic側で一時的な問題が発生しています。しばらくしてから再試行してください。';
+      else if (e && e.message) friendly = e.message;
+      patchLocalMessage(m.id, {status:'error', errorMessage: friendly});
+      render();
+      Store.updateMessage(m.id, {status:'error', errorMessage: friendly});
+    });
+  }
+})();
+</script>
+</body>
+</html>
