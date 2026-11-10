@@ -1,0 +1,9 @@
+{
+  "name": "fourbrain",
+  "private": true,
+  "type": "module",
+  "dependencies": {
+    "@anthropic-ai/sdk": "^1.7.0",
+    "zod": "^4.6.7"
+  }
+}
